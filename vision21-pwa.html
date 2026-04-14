@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Seeing Clearly">
+<meta name="theme-color" content="#085041">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Seeing Clearly — 21-Day Vision Programme</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #5DCAA5;
+    --teal-dark: #085041;
+    --gold: #BA7517;
+    --gold-light: #FAEEDA;
+    --gold-mid: #EF9F27;
+    --dark: #2C2C2A;
+    --mid: #5F5E5A;
+    --light: #F1EFE8;
+    --white: #ffffff;
+    --border: rgba(44,44,42,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    color: var(--dark);
+    background: #fafaf8;
+    line-height: 1.7;
+  }
+  .serif { font-family: 'Cormorant Garamond', serif; }
+
+  /* ── HEADER ── */
+  .hero {
+    background: var(--teal-dark);
+    color: white;
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(93,202,165,0.12);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -40px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(186,117,23,0.15);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(93,202,165,0.25);
+    color: var(--teal-mid);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    color: white;
+  }
+  .hero h1 em { font-style: italic; color: var(--teal-mid); }
+  .hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+  }
+  .hero-byline {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── NAV ── */
+  .week-nav {
+    display: flex;
+    gap: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .week-nav::-webkit-scrollbar { display: none; }
+  .week-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .week-btn:hover { color: var(--teal); background: var(--teal-light); }
+  .week-btn.active {
+    color: var(--teal-dark);
+    border-bottom-color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  /* ── MAIN ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── FOUNDATIONS BAR ── */
+  .foundations {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold-mid);
+    border-radius: 0 12px 12px 0;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .foundations h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .foundations p { font-size: 0.88rem; color: var(--mid); }
+
+  /* ── WEEK INTRO ── */
+  .week-intro {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .week-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.4rem;
+  }
+  .week-intro h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--dark);
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+  .week-intro p { font-size: 0.95rem; color: var(--mid); max-width: 620px; }
+
+  /* ── DAYS GRID ── */
+  .days-grid { display: flex; flex-direction: column; gap: 1rem; }
+
+  .day-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .day-card:hover { box-shadow: 0 4px 20px rgba(29,158,117,0.08); }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-num {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--teal-dark);
+    flex-shrink: 0;
+  }
+  .day-num.gold-bg {
+    background: var(--gold-light);
+    color: var(--gold);
+  }
+  .day-header-text { flex: 1; }
+  .day-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 2px;
+  }
+  .day-theme {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--mid);
+  }
+  .day-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .tag-vib { background: var(--teal-light); color: var(--teal-dark); }
+  .tag-body { background: #EAF3DE; color: #27500A; }
+  .tag-nutr { background: var(--gold-light); color: var(--gold); }
+  .tag-light { background: #E6F1FB; color: #185FA5; }
+  .day-chevron {
+    color: var(--mid);
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .day-card.open .day-chevron { transform: rotate(180deg); }
+
+  .day-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  .day-card.open .day-body { display: block; }
+
+  /* ── PRACTICE BLOCKS ── */
+  .practice-section {
+    margin-top: 1rem;
+  }
+  .practice-section h4 {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--teal-light);
+  }
+  .practice-block {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+  .practice-block-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.35rem;
+  }
+  .practice-block p, .practice-block li {
+    font-size: 0.85rem;
+    color: var(--mid);
+    line-height: 1.65;
+  }
+  .practice-block ul { padding-left: 1.2rem; }
+  .practice-block ul li { margin-bottom: 0.25rem; }
+
+  .quote-block {
+    background: var(--teal-light);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .quote-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--teal-dark);
+    line-height: 1.6;
+  }
+  .quote-block cite {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--teal);
+    font-style: normal;
+    font-weight: 500;
+    margin-top: 0.4rem;
+  }
+
+  .gold-block {
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold-mid);
+    border-radius: 0 10px 10px 0;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .gold-block p { font-size: 0.85rem; color: var(--mid); }
+  .gold-block strong { color: var(--gold); }
+
+  /* ── DAILY RITUAL BOX ── */
+  .ritual-box {
+    background: var(--teal-dark);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    color: white;
+  }
+  .ritual-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--teal-mid);
+    margin-bottom: 1rem;
+  }
+  .ritual-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.85);
+  }
+  .ritual-time {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--teal-mid);
+    background: rgba(93,202,165,0.2);
+    padding: 3px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── SECTION TABS ── */
+  .section-hidden { display: none; }
+
+  /* ── PROGRESS TRACKER ── */
+  .tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-top: 1rem;
+  }
+  .tracker-day {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--white);
+  }
+  .tracker-day:hover { border-color: var(--teal); color: var(--teal); }
+  .tracker-day.done {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+  .tracker-day.today {
+    border-color: var(--gold-mid);
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── NUTRIENTS TABLE ── */
+  .nutr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  @media (max-width: 500px) { .nutr-grid { grid-template-columns: 1fr; } }
+  .nutr-card {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+  .nutr-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--teal-dark);
+    margin-bottom: 0.3rem;
+  }
+  .nutr-foods {
+    font-size: 0.78rem;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+
+  /* ── PRINT / SHARE ── */
+  .action-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--dark);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--teal-light); border-color: var(--teal); color: var(--teal-dark); }
+  .btn-primary {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--teal-dark); border-color: var(--teal-dark); color: white; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2.5rem 1.25rem 2rem; }
+    .container { padding: 1.5rem 1rem 3rem; }
+    .day-tags { display: none; }
+  }
+
+  /* ── INSTALL BANNER ── */
+  .install-banner {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--teal-dark);
+    color: white;
+    padding: 1rem 1.25rem;
+    z-index: 999;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  }
+  .install-banner.show { display: flex; }
+  .install-banner p { flex: 1; font-size: 0.85rem; color: rgba(255,255,255,0.9); line-height: 1.4; }
+  .install-banner p strong { color: var(--teal-mid); }
+  .install-btn {
+    background: var(--teal-mid);
+    border: none;
+    color: var(--teal-dark);
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .install-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .ios-instructions {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--teal-dark);
+    color: white;
+    padding: 1.25rem;
+    z-index: 999;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  }
+  .ios-instructions.show { display: block; }
+  .ios-instructions h4 { font-size: 0.95rem; color: var(--teal-mid); margin-bottom: 0.75rem; }
+  .ios-step { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+  .ios-step-num { background: var(--teal-mid); color: var(--teal-dark); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 500; flex-shrink: 0; }
+  .ios-close { margin-top: 1rem; width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.6rem; border-radius: 8px; font-family: "DM Sans",sans-serif; font-size: 0.85rem; cursor: pointer; }
+  .share-banner {
+    background: var(--gold-light);
+    border: 1px solid rgba(186,117,23,0.2);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .share-banner-text { flex: 1; }
+  .share-banner-text h4 { font-size: 0.88rem; font-weight: 500; color: var(--gold); margin-bottom: 0.3rem; }
+  .share-banner-text p { font-size: 0.82rem; color: var(--mid); line-height: 1.5; }
+  .share-btn {
+    background: var(--gold);
+    border: none;
+    color: white;
+    font-family: "DM Sans",sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Aligned Harmony · Personal Programme</div>
+  <h1 class="serif">Seeing <em>Clearly</em></h1>
+  <p class="hero-sub">A 21-day Conscious Becoming practice for natural vision restoration — body, mind, and field.</p>
+  <p class="hero-byline">Paul Sawyer · alignedharmony.co.uk</p>
+</div>
+
+<nav class="week-nav">
+  <button class="week-btn active" onclick="showWeek('foundations')">Foundations</button>
+  <button class="week-btn" onclick="showWeek('week1')">Week 1</button>
+  <button class="week-btn" onclick="showWeek('week2')">Week 2</button>
+  <button class="week-btn" onclick="showWeek('week3')">Week 3</button>
+  <button class="week-btn" onclick="showWeek('tracker')">Tracker</button>
+  <button class="week-btn" onclick="showWeek('nutrients')">Nutrition</button>
+</nav>
+
+<div class="container">
+
+  <!-- ══ FOUNDATIONS ══ -->
+  <div id="section-foundations">
+    <div class="week-intro">
+      <div class="week-label">Before you begin</div>
+      <h2 class="serif">The Foundations</h2>
+      <p>Read this once before Day 1. These are the principles and daily non-negotiables that run underneath all three weeks.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>"You cannot stay young because you must move through time. But you can stay in your prime by controlling the direction of your thoughts. You do not have to decline."</p>
+      <cite>— Abraham Hicks</cite>
+    </div>
+
+    <div class="practice-block">
+      <div class="practice-block-title">The core understanding</div>
+      <p>Vision is not primarily an eye problem. It is a brain phenomenon, a nervous system phenomenon, and — most fundamentally — a vibrational phenomenon. Over 50% of the brain is dedicated to visual processing. The retina is brain tissue. Decline is not written in the structure of your eye. It is written in a responsive, dynamic system that is always listening to your dominant thoughts, beliefs, and emotional patterns.</p>
+    </div>
+
+    <div class="practice-block">
+      <div class="practice-block-title">The three leverage points</div>
+      <ul>
+        <li><strong>Vibrational</strong> — Your emotional state and dominant thoughts directly regulate the nervous system that governs focus, pupil size, lens flexibility, and retinal blood flow.</li>
+        <li><strong>Physical</strong> — The eye's mitochondria-dense cones need specific nutrition, movement, light, and rest to maintain their extraordinary energy demands.</li>
+        <li><strong>Habitual</strong> — Modern life has created a perfect storm for vision deterioration: excessive near-work, blue light, poor posture, chronic stress. Each habit can be gently reversed.</li>
+      </ul>
+    </div>
+
+    <div class="ritual-box">
+      <h3 class="serif">Your Daily Non-Negotiables — every single day</h3>
+      <div class="ritual-row"><span class="ritual-time">Morning</span><span>Upon waking — before glasses if possible — take 3 slow breaths and say inwardly: <em>"My eyes are whole. My vision is clear. I am becoming."</em></span></div>
+      <div class="ritual-row"><span class="ritual-time">Morning</span><span>Blink intentionally 10 times with a gentle 2-second close-and-squeeze. This activates the oculocardiac reflex and triggers parasympathetic focus.</span></div>
+      <div class="ritual-row"><span class="ritual-time">Every hour</span><span>20-20-20 rule — every 20 minutes at a screen, look 20 feet away for 20 seconds. Blink every 5 seconds while doing so.</span></div>
+      <div class="ritual-row"><span class="ritual-time">Meals</span><span>Include one eye-nutrition food each day (see Nutrition tab). Prioritise wild fish, egg yolks, leafy greens, berries.</span></div>
+      <div class="ritual-row"><span class="ritual-time">Evening</span><span>Amber blue-blocking glasses after sunset. Warm lighting. No screens within 30 min of bed where possible.</span></div>
+      <div class="ritual-row"><span class="ritual-time">Evening</span><span>1-minute vision journal: one moment of clarity today, one thing your eyes did well, one thing you're grateful for.</span></div>
+    </div>
+
+    <div class="foundations" style="margin-top:1.5rem;">
+      <h3>Less is more — always</h3>
+      <p>Eye exercises are metabolically more demanding for the brain than a heavy gym session for the body. Start with less than you think you need. Build slowly. If you feel dizzy, fatigued, or notice worsening — you've done too much. Rest is part of the practice.</p>
+    </div>
+
+  </div>
+
+  <!-- ══ WEEK 1 ══ -->
+  <div id="section-week1" class="section-hidden">
+    <div class="week-intro">
+      <div class="week-label">Days 1–7</div>
+      <h2 class="serif">Week 1 — Softening & Awakening</h2>
+      <p>This week is about relaxation, awareness, and establishing your vibrational foundation. No forcing. No straining. We are waking the system up gently and beginning to shift the dominant tone from resistance to possibility.</p>
+    </div>
+
+    <div class="days-grid">
+
+      <!-- DAY 1 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">1</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 1 — Monday</div>
+            <div class="day-theme">Opening the field</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-vib">Vibrational</span>
+            <span class="tag tag-body">Palming</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="quote-block">
+            <p>"It was the same eyes. With different belief flowing through them."</p>
+            <cite>— Abraham Hicks (on Esther's vision test)</cite>
+          </div>
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Vision Practice — full session</div>
+              <ul>
+                <li>Arrival & breath: 2 min slow exhales. "I am safe. I am here. I am becoming."</li>
+                <li>Heart coherence: hand on heart, breathe golden light in, soften the eyes on each exhale. 2 min.</li>
+                <li>Clarify the desire: "I desire clear, natural, free vision." Feel it as genuine longing — not grasping. 1 min.</li>
+                <li>Visualisation: See yourself waking with clear sight. Walk outside seeing the world in sharp detail. Feel the freedom in your body. 3 min.</li>
+                <li>Palming: Warm your palms, cup over closed eyes. Breathe warmth into your eyes. "My eyes are whole." 2 min.</li>
+                <li>Release: "I allow. I trust. It is unfolding."</li>
+              </ul>
+            </div>
+            <h4>Physical Practice (5 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Palming only — pure rest</div>
+              <p>Rub palms vigorously. Cup over closed eyes. Complete darkness. Slow deep breaths — exhale longer than inhale. 5 minutes. This is the foundation practice. Do nothing else with the eyes today.</p>
+            </div>
+            <h4>Evening (5 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Vision journal — baseline entry</div>
+              <p>Write honestly: How is your vision today? What's challenging? What do you notice? What do you want? This is your Day 1 baseline — you'll refer back to this on Day 21.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">2</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 2 — Tuesday</div>
+            <div class="day-theme">Befriending the blur</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-vib">Vibrational</span>
+            <span class="tag tag-body">Awareness</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Vision Practice</div>
+              <p>Full morning practice as Day 1. Begin to notice — during the visualisation — not just the clarity but the feeling of ease. The looseness of your face. The absence of strain.</p>
+            </div>
+            <h4>Physical Practice (5 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Befriend the blur</div>
+              <p>Remove glasses for 5 minutes indoors. Don't strain to see. Instead: breathe, blink softly, and simply notice. When blur arises, respond with curiosity — "interesting" — rather than frustration. Find the distance at which things are clearest and rest there. This is information, not failure.</p>
+            </div>
+            <div class="gold-block">
+              <p><strong>Today's awareness practice:</strong> Each time you put on your glasses today, pause and bless them: "Thank you for supporting my vision while my natural sight awakens." This is not sentimental — it shifts the emotional charge from resentment to appreciation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">3</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 3 — Wednesday</div>
+            <div class="day-theme">Blink & breathe</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-body">Nervous system</span>
+            <span class="tag tag-nutr">Nutrition</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice + intention</div>
+              <p>Full morning practice. Today during your heart coherence breathing, consciously extend the exhale to twice the length of the inhale. This is the most direct way to activate the parasympathetic nervous system — which is the same system that governs lens focus and pupil constriction.</p>
+            </div>
+            <h4>Physical Practice (5 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Intentional blinking drill</div>
+              <p>Set a timer for 3 minutes. Every 10 seconds, perform one deliberate slow blink: close for 2 seconds with a gentle squeeze, then open. Notice any immediate sharpening of focus after the squeeze — this is the oculocardiac reflex at work. You are literally triggering a parasympathetic response that improves lens focusing.</p>
+            </div>
+            <div class="gold-block">
+              <p><strong>Nutrition focus today:</strong> Eat wild oily fish or take omega-3 (EPA/DHA). DHA makes up 50–60% of the structural mass of your retina. This is not optional nutrition — it is retinal building material.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">4</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 4 — Thursday</div>
+            <div class="day-theme">Sunlight as medicine</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-light">Light</span>
+            <span class="tag tag-body">Outdoors</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice outdoors if possible</div>
+              <p>Take your morning practice outside if weather allows. Sit facing the general direction of the sun with your eyes closed. Feel the warmth on your face. The natural light reaching your closed eyelids is already stimulating your retinal dopamine receptors — the mechanism that regulates healthy eye development and maintenance.</p>
+            </div>
+            <h4>Physical Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Sunning + palming</div>
+              <ul>
+                <li>Face the sun with eyes closed. Gently turn your head left and right as far as comfortable — this simultaneously loosens the neck and stimulates the optic nerve pathway. 3 min.</li>
+                <li>Immediately follow with palming — cup hands over eyes, breathe, rest. Stay twice as long as you sunned. 6 min.</li>
+                <li>Blink 10 times gently when you open your eyes. Notice colour vividness.</li>
+              </ul>
+            </div>
+            <div class="gold-block">
+              <p><strong>Today's outdoor goal:</strong> Spend at least 20 minutes outside, looking at objects at varied distances — a tree branch close by, a rooftop further away, a distant hill or horizon. This is the single most evidence-supported anti-myopia practice available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">5</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 5 — Friday</div>
+            <div class="day-theme">Releasing resistance</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-vib">Vibrational</span>
+            <span class="tag tag-body">Emotional</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="quote-block">
+            <p>"If you need the condition to change in order to feel free, you're never going to get there from there. Find the feeling of freedom first."</p>
+            <cite>— Abraham Hicks</cite>
+          </div>
+          <div class="practice-section">
+            <h4>Morning Practice (15 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Resistance clearing practice</div>
+              <ul>
+                <li>Sit quietly. Place one hand on heart, one on belly. Breathe slowly.</li>
+                <li>Ask yourself honestly: what do I believe about my vision? Notice any thoughts like "it only gets worse," "it's genetic," "nothing can be done." Don't fight them. Just name them gently.</li>
+                <li>For each belief, ask: "Is this definitely true? Has it been true for everyone? What if I were an exception?"</li>
+                <li>Then move to the feeling-state: What would it feel like to have clear natural vision? Find that feeling — not the glasses-off outcome, but the emotional quality of freedom and ease. Stay there for 5 minutes.</li>
+                <li>Close with palming and gratitude.</li>
+              </ul>
+            </div>
+            <h4>Physical Practice (5 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Palming + intentional blink</div>
+              <p>3 min palming, followed by the 2-minute blinking drill from Day 3. Notice if there's any difference in how your vision feels after palming versus without it.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 6 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">6</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 6 — Saturday</div>
+            <div class="day-theme">Colour awareness walk</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-body">Outdoors</span>
+            <span class="tag tag-light">Awareness</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. In your visualisation today, imagine yourself on this morning's walk — seeing without glasses, noticing colour and detail with total ease and joy.</p>
+            </div>
+            <h4>Physical Practice — Colour Awareness Walk (20+ min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Mindful distance seeing</div>
+              <ul>
+                <li>Choose a colour before you leave — say, green today. Your only task on this walk is to notice green things at every distance.</li>
+                <li>Remove glasses if safe to do so for any portion of the walk where you don't need them for safety.</li>
+                <li>Every few minutes, pause and consciously focus on something far away. Really look — a leaf on a distant tree, a door, a cloud. Let the eyes settle and soften rather than straining.</li>
+                <li>Blink softly and frequently throughout. Breathe. Do not rush.</li>
+              </ul>
+            </div>
+            <div class="gold-block">
+              <p><strong>Rest day from intensity:</strong> Saturday is a natural integration day. Do your daily non-negotiables. Enjoy the walk. Let the system consolidate this week's work.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 7 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num gold-bg">7</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 7 — Sunday</div>
+            <div class="day-theme">Week 1 integration</div>
+          </div>
+          <div class="day-tags">
+            <span class="tag tag-vib">Review</span>
+            <span class="tag tag-body">Rest</span>
+          </div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Full Morning Practice (20 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Extended Conscious Becoming Practice</div>
+              <p>Give yourself more time today. Extend the visualisation to 10 minutes. Include scenes of your vision a year from now — freedom, clarity, confidence. Feel deep appreciation for every moment of progress, however small, in this first week.</p>
+            </div>
+            <h4>Week 1 Review (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Journal reflection</div>
+              <ul>
+                <li>What did I notice about my vision this week — any moments of unexpected clarity?</li>
+                <li>What emotional patterns came up? What resistance appeared?</li>
+                <li>What practices felt most alive and resonant?</li>
+                <li>What is my dominant feeling about my vision journey right now?</li>
+              </ul>
+            </div>
+            <div class="gold-block">
+              <p><strong>Prepare for Week 2:</strong> Week 2 introduces eye movement training and the near-far focus drill. Read tomorrow's entry tonight so you arrive prepared.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end days-grid week 1 -->
+  </div>
+
+  <!-- ══ WEEK 2 ══ -->
+  <div id="section-week2" class="section-hidden">
+    <div class="week-intro">
+      <div class="week-label">Days 8–14</div>
+      <h2 class="serif">Week 2 — Training & Strengthening</h2>
+      <p>The visual system is now awake and beginning to trust the new direction. This week we introduce structured physical practices — eye movement training, near-far focus drills, neck mobilisation, and mitochondrial support — while deepening the vibrational work.</p>
+    </div>
+
+    <div class="days-grid">
+
+      <!-- DAY 8 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">8</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 8 — Monday</div>
+            <div class="day-theme">Eye movement training</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Training</span><span class="tag tag-vib">Vibrational</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. In your visualisation today — imagine moving your eyes freely, easily, with full control and precision. Effortless ocular movement is a sign of a healthy, well-supported visual brain.</p>
+            </div>
+            <h4>Physical Practice (8 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Slow eye movements — head still</div>
+              <ul>
+                <li>Sit upright, head completely still. Only the eyes move.</li>
+                <li>Up and down, slowly: 8 repetitions. The movement should take 3–4 seconds each direction.</li>
+                <li>Left and right, slowly: 8 repetitions.</li>
+                <li>Diagonal (top-left to bottom-right and reverse): 6 repetitions each diagonal.</li>
+                <li>Rest 1 min — palm over eyes.</li>
+                <li>Clockwise circle, very slowly: 4 full rotations. Then counterclockwise: 4 rotations.</li>
+              </ul>
+              <p style="margin-top:0.5rem; font-style:italic;">Total: no more than 4 minutes of movement. This is more than enough for Day 8. The brain does not signal fatigue like muscles do — stop before you think you need to.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 9 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">9</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 9 — Tuesday</div>
+            <div class="day-theme">Near-far focus drill</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Training</span><span class="tag tag-nutr">Nutrition</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. Today hold a specific image during your visualisation: looking out of a window and seeing both near (a plant on the sill) and far (a tree, a hill, the sky) with equal ease. The lens moving freely and effortlessly between distances.</p>
+            </div>
+            <h4>Physical Practice (8 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Near-far focus drill</div>
+              <ul>
+                <li>Hold your thumb 25cm from your face. Focus on your thumbprint — really look at the detail. Hold for 5 seconds. Feel the ciliary muscle engaging.</li>
+                <li>Look at a point at least 6 metres away. Focus there for 5 seconds. Feel the lens relax and flatten.</li>
+                <li>Alternate for 3 minutes total. Blink between each shift.</li>
+                <li>Rest with palming for 2 minutes.</li>
+              </ul>
+              <p style="margin-top:0.5rem; font-style:italic;">This exercises the ciliary muscle — the muscle whose flexibility is most associated with presbyopia and near-vision changes. The key is the elasticity, not force.</p>
+            </div>
+            <div class="gold-block">
+              <p><strong>Nutrition today:</strong> Egg yolks — 2–3 with breakfast. Lutein and zeaxanthin in egg yolk is significantly more bioavailable than from plant sources. These carotenoids concentrate in your macula and act as natural blue-light filters.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 10 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">10</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 10 — Wednesday</div>
+            <div class="day-theme">Posture & the neck</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Posture</span><span class="tag tag-body">Training</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. The second cervical vertebra (C2) is myofascially connected to the optic nerve pathway. Today's awareness: as you breathe, consciously soften and lengthen the back of your neck. Feel the optic pathway opening.</p>
+            </div>
+            <h4>Physical Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Neck mobilisation — vision locked</div>
+              <ul>
+                <li>Slowly turn your head fully left — keeping your eyes fixed straight ahead. This means your eyes rotate in the opposite direction. Hold 5 seconds. Return. Right. Repeat 6 times each side.</li>
+                <li>Gentle lateral flexion: ear toward shoulder, slowly. 5 each side.</li>
+                <li>Forward flexion and gentle extension: chin toward chest, then gentle tilt back. 5 each.</li>
+                <li>Shoulder rolls — large, slow, backward. 10 repetitions.</li>
+                <li>Finish with 3 min palming.</li>
+              </ul>
+              <p style="margin-top:0.5rem; font-style:italic;">The neurological pairing of neck and eye muscles means this mobilisation directly stimulates the visual brain. Research shows an 80%+ correlation between head posture and astigmatism angle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 11 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">11</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 11 — Thursday</div>
+            <div class="day-theme">Mitochondrial charge</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-light">Red light</span><span class="tag tag-nutr">Fasting</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. Today imagine your retinal mitochondria — billions of tiny energy factories in the cone cells of your macula — fully charged, vibrant, operating at peak capacity. The energy of clear sight flowing effortlessly through every cell.</p>
+            </div>
+            <h4>Physical Practice</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Red light therapy (if you have a device) — 3 min, eyes closed</div>
+              <p>670nm red light with eyes closed, once this week. If you don't have a device: simply face the morning sun with eyes closed for 3 minutes. The effect is similar — photobiomodulation of retinal mitochondria via light penetration through the eyelids. Follow immediately with 6 min palming.</p>
+            </div>
+            <div class="gold-block">
+              <p><strong>Intermittent fasting note:</strong> If you already practise IF, extend your fast slightly today. Fasting triggers autophagy — cellular recycling — which clears damaged proteins including those responsible for floaters and lens opacity. It also increases mitochondrial efficiency. A 16-hour fast is sufficient to begin this process.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 12 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">12</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 12 — Friday</div>
+            <div class="day-theme">Combined training session</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Training</span><span class="tag tag-vib">Vibrational</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. Notice how the practice itself feels different from Day 1. The visualisation more vivid? The body more responsive? Log this.</p>
+            </div>
+            <h4>Physical Practice (12 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Full Week 2 circuit</div>
+              <ul>
+                <li>Intentional blink drill: 2 min.</li>
+                <li>Slow eye movements (up/down, left/right, diagonals): 3 min.</li>
+                <li>Near-far focus drill: 3 min.</li>
+                <li>Neck mobilisation with vision locked: 2 min.</li>
+                <li>Palming to close: 3 min.</li>
+              </ul>
+              <p style="margin-top:0.5rem; font-style:italic;">This is your maximum daily physical practice. Do not exceed this. Build consolidation time — every session will have less visible benefit if the brain has not had time to process and integrate the previous one.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 13 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">13</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 13 — Saturday</div>
+            <div class="day-theme">Outdoor distance day</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Outdoors</span><span class="tag tag-light">Light</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice outdoors. Sunning + palming before or after.</p>
+            </div>
+            <h4>The Prescription: 2 hours outdoors</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Active distance seeing</div>
+              <p>Go somewhere with a view. Chester has excellent options — the Rows, the river, the walls, the surrounding countryside. The goal: sustained natural light and deliberate far-distance focus. No phone. Active engagement with objects at distance. Notice colour. Notice detail. Notice the quality of your seeing without strain.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 14 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num gold-bg">14</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 14 — Sunday</div>
+            <div class="day-theme">Week 2 integration</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Review</span><span class="tag tag-body">Rest</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Extended Morning Practice (20 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Deep Conscious Becoming Practice</div>
+              <p>Full practice with extended visualisation. Today add this: imagine yourself teaching someone else about this process — explaining with quiet confidence and joy that vision can change. Notice how that feels in your body. That knowing is yours now.</p>
+            </div>
+            <h4>Week 2 Review (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Journal reflection</div>
+              <ul>
+                <li>Which physical practices produced the most noticeable effect?</li>
+                <li>Has the quality of your daily visual experience changed in any way?</li>
+                <li>What does your vision feel like — not just look like? Is there more ease? Less strain?</li>
+                <li>What evidence of positive change have you collected?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ WEEK 3 ══ -->
+  <div id="section-week3" class="section-hidden">
+    <div class="week-intro">
+      <div class="week-label">Days 15–21</div>
+      <h2 class="serif">Week 3 — Integration & Becoming</h2>
+      <p>Week 3 is about deepening, consolidating, and beginning to make this a way of life rather than a programme. The practices become more fluid. The vibrational work becomes more natural. You begin to know — not just believe — that your vision is changing.</p>
+    </div>
+
+    <div class="days-grid">
+
+      <!-- DAY 15 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">15</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 15 — Monday</div>
+            <div class="day-theme">Deepening the practice</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Vibrational</span><span class="tag tag-body">Training</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (15 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Extended Conscious Becoming Practice</div>
+              <p>Allow 15 minutes today. In your visualisation, hold the scene for longer — really inhabit it. Feel the texture of clear natural vision. Not just seeing sharp things, but the quality of ease and freedom and presence that comes with seeing without strain. Let the nervous system really drink this in.</p>
+            </div>
+            <h4>Physical Practice (12 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Full circuit — slightly longer</div>
+              <ul>
+                <li>Intentional blinking: 2 min.</li>
+                <li>Eye movements (all directions): 4 min. You should notice these feel smoother now than Day 8.</li>
+                <li>Near-far drill: 3 min.</li>
+                <li>Neck mobilisation: 2 min.</li>
+                <li>Palming close: 3 min.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 16 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">16</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 16 — Tuesday</div>
+            <div class="day-theme">Emotional root work</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Emotional</span><span class="tag tag-body">Somatic</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="quote-block">
+            <p>"Almost 100% of the time there will be some kind of emotional stressor — and when I explain this and they shift, their vision stabilises."</p>
+            <cite>— Dr. Ranny Banck, Integrative Ophthalmologist</cite>
+          </div>
+          <div class="practice-section">
+            <h4>Morning Practice (20 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Deeper emotional clearing</div>
+              <ul>
+                <li>Begin with the full Conscious Becoming Practice.</li>
+                <li>Then, with eyes closed and hands on heart, ask: "When did I first begin to struggle with my vision? What was happening in my life at that time?"</li>
+                <li>Simply notice what arises — without judgment, without story. Breathe into any sensation that appears in the body.</li>
+                <li>Say inwardly: "I release the memory held in my visual system. I allow new light to flow through me."</li>
+                <li>Close with extended palming — 5 minutes — and deep appreciation for your eyes.</li>
+              </ul>
+            </div>
+            <div class="gold-block">
+              <p><strong>Note:</strong> If you work with EFT tapping or another somatic modality — today is an excellent day to bring it to the vision question specifically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 17 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">17</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 17 — Wednesday</div>
+            <div class="day-theme">Circulation & renewal</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Circulation</span><span class="tag tag-nutr">Nutrition</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (10 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice</div>
+              <p>Full practice. Today add this micro-practice throughout the day: whenever you wash your hands or face, do the hot-cold eye circulation practice.</p>
+            </div>
+            <h4>Physical Practice — Circulation</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Hot-cold eye bath (morning and evening)</div>
+              <ul>
+                <li>Morning: Hot-Cold-Hot-Cold. 4 sets of 20 gentle splashes to closed eyes, alternating. Hot = comfortably warm, not scalding.</li>
+                <li>Evening: Cold-Hot-Cold-Hot. Same 4 sets.</li>
+              </ul>
+              <p style="margin-top:0.5rem; font-style:italic;">This vasoconstriction/vasodilation cycle is one of the most underrated circulation practices for the eyes. The micro-vessels of the retina — which are among the finest in the body — depend on this kind of circulation to deliver nutrients and remove waste.</p>
+            </div>
+            <div class="gold-block">
+              <p><strong>Nutrition today:</strong> Magnesium-rich meal or supplement (chelated form for eye/brain). Magnesium supports mitochondrial function, reduces stress, relaxes the ciliary muscle, and — for many people — reduces eye twitches within days.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 18 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">18</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 18 — Thursday</div>
+            <div class="day-theme">Abraham alignment day</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Vibrational</span><span class="tag tag-vib">Abraham</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="quote-block">
+            <p>"You are source energy. You project yourself into this fresh frisky body. Your fresh frisky body has fresh frisky experiences. The universe is set up for expansion."</p>
+            <cite>— Abraham Hicks</cite>
+          </div>
+          <div class="practice-section">
+            <h4>Morning Practice (20 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Pure vibrational alignment — no eye exercises today</div>
+              <ul>
+                <li>Begin with 5 minutes of pure appreciation. Not about vision specifically — just life. Things you love. Things that delight you. Really feel them.</li>
+                <li>Then bring that feeling — that vibrational tone of appreciation and aliveness — into your vision practice. The visualisation of clear sight emerging naturally from a body that is loved, appreciated, and aligned.</li>
+                <li>Abraham Hicks on the aging teaching: "New cells are born every day. The chemical factory is happening every day. You could theoretically continue to be reborn here in this physical body." Let this land in your body as a felt sense, not just an idea.</li>
+                <li>Close with: "I am in my prime. I choose to stay in my prime."</li>
+              </ul>
+            </div>
+            <div class="foundations" style="margin-top:0.75rem;">
+              <h3>No physical exercises today</h3>
+              <p>Rest the physical system. Alignment day. Walk, enjoy the light, eat well, appreciate. Let the field work while you simply remain open.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 19 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">19</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 19 — Friday</div>
+            <div class="day-theme">Full integration practice</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-body">Training</span><span class="tag tag-vib">Vibrational</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning (30 min — your fullest session)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice — extended</div>
+              <p>15 min full practice with long visualisation — include scenes from ordinary daily life with natural clear vision. Feeling fully at home in clear sight.</p>
+            </div>
+            <div class="practice-block">
+              <div class="practice-block-title">Physical circuit — full</div>
+              <ul>
+                <li>Sunning 3 min + palming 6 min.</li>
+                <li>Intentional blinking 2 min.</li>
+                <li>Eye movement training — all directions — 4 min.</li>
+                <li>Near-far focus drill 3 min.</li>
+                <li>Neck mobilisation with vision lock 2 min.</li>
+                <li>Final palming close 3 min.</li>
+              </ul>
+            </div>
+            <div class="gold-block">
+              <p><strong>Notice:</strong> Compare this session to Day 8 — your first training day. How does the movement feel? How does the palming feel? What is different in the quality of your seeing afterwards?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 20 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num">20</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 20 — Saturday</div>
+            <div class="day-theme">Preparation & review</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Review</span><span class="tag tag-body">Rest</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="practice-section">
+            <h4>Morning Practice (15 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Conscious Becoming Practice + gratitude</div>
+              <p>Full practice. In your closing, spend 5 minutes in pure gratitude for everything you have discovered and experienced in these 21 days. Every small clarity. Every moment of ease. Every shift in how you relate to your vision.</p>
+            </div>
+            <h4>Afternoon — gentle outdoor time</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Rest and receive</div>
+              <p>Walk somewhere you love. Leave the phone at home. Simply be present with your eyes and your world. Receive the beauty. Let it be evidence of what your eyes already can do.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 21 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-num gold-bg">21</div>
+          <div class="day-header-text">
+            <div class="day-name">Day 21 — Sunday</div>
+            <div class="day-theme">Completion & continuation</div>
+          </div>
+          <div class="day-tags"><span class="tag tag-vib">Completion</span><span class="tag tag-vib">Vision</span></div>
+          <div class="day-chevron">▼</div>
+        </div>
+        <div class="day-body">
+          <div class="quote-block">
+            <p>"You have turned and gone with the flow relative to things that are important to you more today than you usually do in a lifetime. And you will see results from this."</p>
+            <cite>— Abraham Hicks</cite>
+          </div>
+          <div class="practice-section">
+            <h4>Morning — Full Ceremony (30 min)</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">The completion practice</div>
+              <ul>
+                <li>Read your Day 1 journal entry. Really absorb where you were on that morning.</li>
+                <li>Full Conscious Becoming Practice — the fullest, richest, most embodied session you have done. Give everything to the visualisation. The feeling of freedom. The gratitude. The trust.</li>
+                <li>Full physical circuit — take your time. Appreciate each element.</li>
+                <li>Close with 10 minutes of silent palming. No agenda. Just rest, presence, and the quiet knowing that something has shifted.</li>
+              </ul>
+            </div>
+            <h4>Journal — Day 21 entry</h4>
+            <div class="practice-block">
+              <div class="practice-block-title">Your becoming so far</div>
+              <ul>
+                <li>What has changed — in your vision, in your body, in your relationship with your eyes?</li>
+                <li>What evidence of change have you collected?</li>
+                <li>What beliefs have softened or shifted?</li>
+                <li>What practices feel most alive and want to continue?</li>
+                <li>What do you commit to carrying forward?</li>
+              </ul>
+            </div>
+            <div class="ritual-box">
+              <h3 class="serif">Beyond Day 21 — Your continuing practice</h3>
+              <div class="ritual-row"><span class="ritual-time">Daily forever</span><span>Morning Conscious Becoming Vision Practice (10–15 min). The non-negotiables. Evening journal.</span></div>
+              <div class="ritual-row"><span class="ritual-time">3x weekly</span><span>Full physical circuit: blink drill + eye movements + near-far + neck + palming.</span></div>
+              <div class="ritual-row"><span class="ritual-time">Weekly</span><span>Extended outdoor session (2+ hrs). Sunning + palming. Integration journal.</span></div>
+              <div class="ritual-row"><span class="ritual-time">Monthly</span><span>Informal vision check — same conditions, same distance. Notice and record any change.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ TRACKER ══ -->
+  <div id="section-tracker" class="section-hidden">
+    <div class="week-intro">
+      <div class="week-label">Progress</div>
+      <h2 class="serif">21-Day Tracker</h2>
+      <p>Tap a day to mark it complete. Your progress is saved in this browser session.</p>
+    </div>
+    <div class="tracker-grid" id="tracker-grid"></div>
+    <div style="margin-top:1.5rem; padding:1rem; background:var(--teal-light); border-radius:12px;">
+      <div id="tracker-message" style="font-size:0.9rem; color:var(--teal-dark);"></div>
+    </div>
+    <div class="action-bar">
+      <button class="btn" onclick="resetTracker()">Reset tracker</button>
+    </div>
+  </div>
+
+  <!-- ══ NUTRIENTS ══ -->
+  <div id="section-nutrients" class="section-hidden">
+    <div class="week-intro">
+      <div class="week-label">Nutrition Guide</div>
+      <h2 class="serif">Feeding the Visual System</h2>
+      <p>These are the specific nutrients your retinal cone cells, macula, and lens need to thrive. The mitochondria-dense cones are the first to suffer when nutrition is poor.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>"If you can support your eyes nutritionally, you are already 80% of the way there in terms of supporting your eyes for a lifetime of healthy eyesight."</p>
+      <cite>— Dr. Ranny Banck, Integrative Ophthalmologist</cite>
+    </div>
+
+    <div class="nutr-grid">
+      <div class="nutr-card">
+        <div class="nutr-name">DHA / EPA (Omega-3)</div>
+        <div class="nutr-foods">Wild salmon, sardines, mackerel, cod liver oil. DHA = 50–60% of retinal structural mass. Non-negotiable.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Lutein & Zeaxanthin</div>
+        <div class="nutr-foods">Egg yolks (most bioavailable), kale, spinach, Swiss chard, broccoli. Concentrate in the macula. Natural blue-light filters.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Vitamin A (preformed)</div>
+        <div class="nutr-foods">Beef liver, cod liver oil, butter, egg yolks. Supports cornea and retina. More bioavailable than beta-carotene.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Magnesium (chelated)</div>
+        <div class="nutr-foods">Leafy greens, pumpkin seeds, dark chocolate. Supplement chelated form. Supports mitochondria, reduces stress, relaxes ciliary muscle.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Zinc</div>
+        <div class="nutr-foods">Pumpkin seeds, lamb, beef, oysters. Enables vitamin A to function in the retina. Supports night vision.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Anthocyanins</div>
+        <div class="nutr-foods">Blueberries, blackcurrants, blackberries. Strengthen retinal capillaries. Improve night vision. Anti-inflammatory.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Vitamin D3 + K2</div>
+        <div class="nutr-foods">Sunlight (primary), cod liver oil, fatty fish. D3 is anti-inflammatory; research shows high-dose D3 can reduce intraocular pressure. Always take with K2 and magnesium.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Vitamin B1 (Thiamine)</div>
+        <div class="nutr-foods">Pork, nutritional yeast, sunflower seeds. Deficiency causes dry eye via autonomic nervous system dysfunction. Depleted by excess carbs, coffee, alcohol.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Saffron</div>
+        <div class="nutr-foods">Spice form or supplement. Specific research on macular degeneration — improves visual acuity in AMD. Add to food or take as supplement.</div>
+      </div>
+      <div class="nutr-card">
+        <div class="nutr-name">Carnosine / NAC drops</div>
+        <div class="nutr-foods">Red meat (carnosine). N-acetyl carnosine eye drops for cataracts — dissolves glycated proteins in the lens. Available OTC.</div>
+      </div>
+    </div>
+
+    <div class="practice-block" style="margin-top:1.5rem;">
+      <div class="practice-block-title">What to reduce or eliminate</div>
+      <ul>
+        <li>Refined sugar and high-starch foods — directly linked to cataracts, retinopathy, and macular degeneration via glycation (sugar bonding to proteins).</li>
+        <li>Ultra-processed foods — displace nutrients, drive inflammation, impair mitochondrial function.</li>
+        <li>Excess alcohol and coffee — both deplete B1, which affects tear production and autonomic eye function.</li>
+        <li>Blue light after sunset — disrupts circadian rhythm, melatonin production, and nightly retinal repair.</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- end container -->
+
+<script>
+function showWeek(id) {
+  const sections = ['foundations','week1','week2','week3','tracker','nutrients'];
+  sections.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.classList.toggle('section-hidden', s !== id);
+  });
+  document.querySelectorAll('.week-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', sections[i] === id);
+  });
+  if (id === 'tracker') renderTracker();
+}
+
+function toggleDay(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+const STORAGE_KEY = 'vision21_progress';
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveProgress(p) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch(e) {}
+}
+
+function renderTracker() {
+  const grid = document.getElementById('tracker-grid');
+  const progress = getProgress();
+  grid.innerHTML = '';
+  let done = 0;
+  for (let d = 1; d <= 21; d++) {
+    const div = document.createElement('div');
+    div.className = 'tracker-day' + (progress[d] ? ' done' : '');
+    div.textContent = d;
+    div.onclick = () => {
+      const p = getProgress();
+      p[d] = !p[d];
+      if (!p[d]) delete p[d];
+      saveProgress(p);
+      renderTracker();
+    };
+    grid.appendChild(div);
+    if (progress[d]) done++;
+  }
+  const msg = document.getElementById('tracker-message');
+  if (done === 0) msg.textContent = 'Tap any day to mark it complete. Your journey begins now.';
+  else if (done < 7) msg.textContent = `${done} of 21 days complete. Week 1 in progress. You are becoming.`;
+  else if (done < 14) msg.textContent = `${done} of 21 days complete. Week 2 underway. The system is responding.`;
+  else if (done < 21) msg.textContent = `${done} of 21 days complete. Week 3. You are not the same person who began this.`;
+  else msg.textContent = '21 of 21 days complete. You have done something remarkable. Now make it a way of life.';
+}
+
+function resetTracker() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  renderTracker();
+}
+
+
+  // ── Service Worker Registration ──
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  // ── Install Prompt ──
+  let deferredPrompt = null;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (!isInStandaloneMode) {
+    if (isIOS) {
+      setTimeout(() => {
+        document.getElementById('ios-instructions').classList.add('show');
+      }, 3000);
+    } else {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('install-banner').classList.add('show');
+      });
+      document.getElementById('install-btn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          deferredPrompt = null;
+          document.getElementById('install-banner').classList.remove('show');
+        }
+      });
+    }
+  }
+
+</script>
+
+  <!-- Install Banner (Android/Desktop) -->
+  <div class="install-banner" id="install-banner">
+    <p><strong>Add to Home Screen</strong><br>Install this programme on your phone for offline access.</p>
+    <button class="install-btn" id="install-btn">Install</button>
+    <button class="install-close" onclick="document.getElementById('install-banner').classList.remove('show')">&#x2715;</button>
+  </div>
+
+  <!-- iOS Instructions -->
+  <div class="ios-instructions" id="ios-instructions">
+    <h4>Add to your iPhone Home Screen</h4>
+    <div class="ios-step"><div class="ios-step-num">1</div><div>Tap the <strong>Share</strong> button at the bottom of Safari (the box with an arrow pointing up)</div></div>
+    <div class="ios-step"><div class="ios-step-num">2</div><div>Scroll down and tap <strong>"Add to Home Screen"</strong></div></div>
+    <div class="ios-step"><div class="ios-step-num">3</div><div>Tap <strong>"Add"</strong> in the top right — the app appears on your home screen</div></div>
+    <div class="ios-step"><div class="ios-step-num">4</div><div>Open it from your home screen — it runs full-screen, like a native app</div></div>
+    <button class="ios-close" onclick="document.getElementById('ios-instructions').classList.remove('show')">Got it</button>
+  </div>
+
+
+</body>
+</html>

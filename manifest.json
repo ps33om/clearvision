@@ -1,0 +1,24 @@
+{
+  "name": "Seeing Clearly — 21-Day Vision Programme",
+  "short_name": "Seeing Clearly",
+  "description": "A 21-day Conscious Becoming practice for natural vision restoration by Paul Sawyer, Aligned Harmony.",
+  "start_url": "./vision21-pwa.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#085041",
+  "theme_color": "#085041",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
