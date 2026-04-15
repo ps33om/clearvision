@@ -1,4 +1,4 @@
-const CACHE = 'seeing-clearly-v2';
+const CACHE = 'seeing-clearly-v3';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -17,4 +17,9 @@ self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
+});
+
+// Notify clients when a new version is waiting
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
 });

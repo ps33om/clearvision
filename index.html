@@ -715,9 +715,57 @@
     margin-top: 1rem;
   }
   .reset-btn:hover { color: var(--gold); border-color: var(--gold-mid); }
+
+  /* ── UPDATE BANNER ── */
+  .update-banner {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--gold);
+    color: white;
+    padding: 0.75rem 1rem;
+    z-index: 9998;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideDown 0.3s ease;
+  }
+  .update-banner.show { display: flex; }
+  .update-banner p { flex: 1; font-size: 0.83rem; line-height: 1.4; }
+  .update-banner p strong { display: block; font-size: 0.88rem; }
+  .update-now {
+    background: white;
+    color: var(--gold);
+    border: none;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .update-dismiss {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+  }
+  @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
 </style>
 </head>
 <body>
+
+
+<!-- Update Banner -->
+<div class="update-banner" id="update-banner">
+  <p><strong>New version available</strong>Tap to get the latest update.</p>
+  <button class="update-now" id="update-now">Update</button>
+  <button class="update-dismiss" onclick="document.getElementById('update-banner').classList.remove('show')">&#x2715;</button>
+</div>
 
 <div class="hero">
   <div class="hero-badge">Aligned Harmony · Personal Programme</div>
@@ -1297,7 +1345,7 @@ function renderTimer(c) {
     </div>
 
     <div class="screen-block">
-      <p><strong>Note for iPhone users:</strong> If you leave this app to use other apps, the timer will pause when the screen locks. Best used as a dedicated focus tool — keep this tab open in the background while you work, or set a phone alarm for backup.</p>
+      <p><strong>Note on background behaviour:</strong> If you leave this app to use other apps, the timer will pause when the screen locks. Android users: the timer keeps running when you switch apps — Chrome handles this well. iPhone/Safari users: keep this tab active as the timer may pause when switching apps.</p>
     </div>
   `;
 
@@ -1591,10 +1639,44 @@ function renderNutrition(c) {
 renderTabs();
 renderContent();
 
-// Service worker registration
+// Service worker registration with update detection
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+
+      // Check for update on each load
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version is ready — show the banner
+            document.getElementById('update-banner').classList.add('show');
+          }
+        });
+      });
+
+      // Handle the Update button
+      document.getElementById('update-now').addEventListener('click', () => {
+        if (reg.waiting) {
+          reg.waiting.postMessage('skipWaiting');
+        }
+        document.getElementById('update-banner').classList.remove('show');
+        window.location.reload();
+      });
+
+      // If SW controller changes (new SW took over), reload automatically
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+
+    } catch(e) {
+      // SW not supported or blocked — silent fail
+    }
   });
 }
 </script>
