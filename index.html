@@ -1228,6 +1228,8 @@ function switchTab(id) {
   renderTabs();
   renderContent();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Restore pill state after re-render (pill is outside container but pulse class may reset)
+  setTimeout(updateFloatPill, 50);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1468,14 +1470,19 @@ function updateFloatPill() {
   const pill = document.getElementById('float-timer');
   const timeEl = document.getElementById('float-time');
   const dot = document.getElementById('float-dot');
-  if (!pill || !timeEl) return;
+  if (!pill || !timeEl || !dot) return;
 
   if (timerState.running && !timerState.floatHidden) {
     pill.classList.add('show');
     timeEl.textContent = formatTime(timerState.secondsLeft);
-    dot.classList.toggle('pulse', timerState.running);
-  } else if (!timerState.running) {
+    dot.classList.add('pulse');
+  } else if (timerState.running && timerState.floatHidden) {
+    // Still running but user hid it — keep hidden
     pill.classList.remove('show');
+  } else {
+    // Not running
+    pill.classList.remove('show');
+    dot.classList.remove('pulse');
   }
 }
 
@@ -1591,7 +1598,7 @@ function tickTimer() {
     if (d) d.textContent = formatTime(timerState.secondsLeft);
   }
 
-  // Always update floating pill
+  // Always update floating pill (resilient — element persists outside container)
   updateFloatPill();
 
   if (timerState.secondsLeft <= 0) {
@@ -2054,17 +2061,21 @@ if ('serviceWorker' in navigator) {
       // Handle the Update button
       document.getElementById('update-now').addEventListener('click', () => {
         if (reg.waiting) {
+          window._userRequestedUpdate = true;
           reg.waiting.postMessage('skipWaiting');
+          // Fallback reload after 1.5s in case controllerchange doesn't fire
+          setTimeout(() => window.location.reload(), 1500);
+        } else {
+          // No waiting worker — just reload fresh
+          window.location.reload();
         }
         document.getElementById('update-banner').classList.remove('show');
-        window.location.reload();
       });
 
-      // If SW controller changes (new SW took over), reload automatically
-      let refreshing = false;
+      // Controller changed = new SW took over after user tapped Update
+      // Only reload if user explicitly requested it via the Update button
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
+        if (window._userRequestedUpdate) {
           window.location.reload();
         }
       });

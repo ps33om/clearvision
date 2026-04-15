@@ -1,9 +1,10 @@
-const CACHE = 'seeing-clearly-v4';
+const CACHE = 'seeing-clearly-v5';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
+  // Cache assets but DO NOT skipWaiting — wait for user to tap Update
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-  self.skipWaiting();
+  // Do NOT call self.skipWaiting() here — that caused the banner to flash and disappear
 });
 
 self.addEventListener('activate', e => {
@@ -19,7 +20,7 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// Notify clients when a new version is waiting
+// Only skip waiting when user explicitly taps Update
 self.addEventListener('message', e => {
   if (e.data === 'skipWaiting') self.skipWaiting();
 });
