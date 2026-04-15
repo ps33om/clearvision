@@ -1132,6 +1132,7 @@ const TABS = [
   { id: 'check', label: 'Vision Check' },
   { id: 'tracker', label: 'Tracker' },
   { id: 'nutrition', label: 'Nutrition' },
+  { id: 'clinical', label: 'Clinical' },
 ];
 
 let currentTab = 'foundations';
@@ -1168,6 +1169,7 @@ function renderContent() {
   else if (currentTab === 'check') renderVisionCheck(c);
   else if (currentTab === 'tracker') renderTracker(c);
   else if (currentTab === 'nutrition') renderNutrition(c);
+  else if (currentTab === 'clinical') renderClinical(c);
 }
 
 // ─── INTENTION ──────────────────────────────────────────────────
@@ -1632,6 +1634,181 @@ function renderNutrition(c) {
     </div>
   `;
 }
+
+
+// ─── CLINICAL BASELINE ───────────────────────────────────────────
+function renderClinical(c) {
+  const records = load('sc_clinical', []);
+
+  c.innerHTML = `
+    <div class="week-intro">
+      <div class="week-label">Optional · Recommended</div>
+      <h2 class="serif">Clinical <em>Baseline</em></h2>
+      <p>This section is entirely optional. If you choose to get a professional eye test before starting — and again at the end — you will have objective, clinical evidence of any change. This is the most compelling record you can keep.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>"My ophthalmologist examined my eyes and said: You have the eyes of a 16-year-old."</p>
+      <cite>— Beth Rubenstein, natural vision programme participant</cite>
+    </div>
+
+    <div class="practice-block">
+      <div class="practice-block-title">Why get a clinical baseline?</div>
+      <ul>
+        <li>A professional prescription gives you precise numbers — sphere, cylinder, and axis — measured in diopters.</li>
+        <li>Any reduction in prescription strength after 21 days is objective, measurable proof that your visual system has responded.</li>
+        <li>It makes your personal experience shareable — for yourself, and eventually as a testimonial if you choose.</li>
+        <li>Your optometrist becomes an unknowing participant in your experiment.</li>
+      </ul>
+    </div>
+
+    <div class="gold-block">
+      <p><strong>One thing to know:</strong> optometrists often measure you at your worst — the clinical environment, the pressure of the test, the bright lights, all activate a mild stress response. Your vision in daily life may already be better than your prescription suggests. The in-app vision chart gives you a complementary self-measured reading that captures your vision in a relaxed state.</p>
+    </div>
+
+    <div class="check-card">
+      <h3 class="serif">How to read your prescription</h3>
+      <p class="small" style="margin-bottom: 0.85rem;">When you get your printout, it will show something like this:</p>
+      <div style="background: var(--light); border-radius: 10px; padding: 1rem; font-family: monospace; font-size: 0.82rem; margin-bottom: 0.85rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.5rem; text-align: center; margin-bottom: 0.5rem;">
+          <div style="font-weight: 500; color: var(--teal-dark);">Eye</div>
+          <div style="font-weight: 500; color: var(--teal-dark);">Sphere</div>
+          <div style="font-weight: 500; color: var(--teal-dark);">Cylinder</div>
+          <div style="font-weight: 500; color: var(--teal-dark);">Axis</div>
+          <div>R</div><div>-2.50</div><div>-0.75</div><div>180</div>
+          <div>L</div><div>-2.25</div><div>-0.50</div><div>175</div>
+        </div>
+      </div>
+      <ul style="font-size: 0.82rem; color: var(--mid); padding-left: 1.1rem; line-height: 1.7;">
+        <li><strong style="color: var(--dark);">Sphere</strong> — the main lens strength. Minus = short-sighted. Plus = long-sighted. A number closer to zero = improvement.</li>
+        <li><strong style="color: var(--dark);">Cylinder</strong> — astigmatism correction. Closer to zero = improvement.</li>
+        <li><strong style="color: var(--dark);">Axis</strong> — the angle of the astigmatism. This may shift as posture and head habits change.</li>
+        <li><strong style="color: var(--dark);">Add</strong> — reading addition if present (presbyopia). Closer to zero = improvement.</li>
+      </ul>
+    </div>
+
+    <div class="check-card">
+      <h3 class="serif">Record a clinical measurement</h3>
+      <p class="small">Record your prescription exactly as it appears on your optometrist's printout.</p>
+      <div class="check-form">
+        <div>
+          <label for="cl-when">When is this reading?</label>
+          <select id="cl-when">
+            <option value="Before Day 1 — Baseline">Before Day 1 — Baseline</option>
+            <option value="After Day 21 — Completion">After Day 21 — Completion</option>
+            <option value="30 days after completion">30 days after completion</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label for="cl-r-sph">Right eye — Sphere</label>
+            <input type="text" id="cl-r-sph" placeholder="e.g. -2.50">
+          </div>
+          <div>
+            <label for="cl-l-sph">Left eye — Sphere</label>
+            <input type="text" id="cl-l-sph" placeholder="e.g. -2.25">
+          </div>
+          <div>
+            <label for="cl-r-cyl">Right eye — Cylinder</label>
+            <input type="text" id="cl-r-cyl" placeholder="e.g. -0.75">
+          </div>
+          <div>
+            <label for="cl-l-cyl">Left eye — Cylinder</label>
+            <input type="text" id="cl-l-cyl" placeholder="e.g. -0.50">
+          </div>
+          <div>
+            <label for="cl-r-axis">Right eye — Axis</label>
+            <input type="text" id="cl-r-axis" placeholder="e.g. 180">
+          </div>
+          <div>
+            <label for="cl-l-axis">Left eye — Axis</label>
+            <input type="text" id="cl-l-axis" placeholder="e.g. 175">
+          </div>
+          <div>
+            <label for="cl-r-add">Right eye — Add (if any)</label>
+            <input type="text" id="cl-r-add" placeholder="e.g. +1.50">
+          </div>
+          <div>
+            <label for="cl-l-add">Left eye — Add (if any)</label>
+            <input type="text" id="cl-l-add" placeholder="e.g. +1.50">
+          </div>
+        </div>
+        <div>
+          <label for="cl-optom">Optometrist / practice</label>
+          <input type="text" id="cl-optom" placeholder="e.g. Chester Eye Centre">
+        </div>
+        <div>
+          <label for="cl-notes">Notes</label>
+          <textarea id="cl-notes" placeholder="How did the test feel? Any observations? How was your vision that day?"></textarea>
+        </div>
+        <button class="check-save" id="cl-save">Save this reading</button>
+      </div>
+    </div>
+
+    ${records.length ? `
+      <div class="check-history">
+        <h3 class="serif" style="font-size: 1.15rem; color: var(--teal-dark); margin-bottom: 0.85rem;">Your clinical records</h3>
+        ${records.slice().reverse().map((r, i, arr) => {
+          const isBaseline = r.when && r.when.includes('Baseline');
+          const baseline = arr[arr.length - 1];
+          let changeNote = '';
+          if (!isBaseline && baseline && baseline.rSph && r.rSph) {
+            const bR = parseFloat(baseline.rSph);
+            const cR = parseFloat(r.rSph);
+            const bL = parseFloat(baseline.lSph);
+            const cL = parseFloat(r.lSph);
+            if (!isNaN(bR) && !isNaN(cR)) {
+              const dR = cR - bR;
+              const dL = cL - bL;
+              const rDir = dR > 0 ? '+' : '';
+              const lDir = dL > 0 ? '+' : '';
+              changeNote = `<div style="background: var(--teal-light); border-radius: 8px; padding: 0.6rem 0.8rem; margin-top: 0.5rem; font-size: 0.8rem; color: var(--teal-dark);">
+                Change from baseline — Right: <strong>${rDir}${dR.toFixed(2)}</strong> · Left: <strong>${lDir}${dL.toFixed(2)}</strong>
+                ${(dR < 0 || dL < 0) ? ' — prescription reducing ✓' : ''}
+              </div>`;
+            }
+          }
+          return `<div class="check-entry">
+            <strong>${r.when}</strong> — ${new Date(r.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}<br>
+            R: Sph ${r.rSph || '–'} · Cyl ${r.rCyl || '–'} · Axis ${r.rAxis || '–'}${r.rAdd ? ' · Add ' + r.rAdd : ''}<br>
+            L: Sph ${r.lSph || '–'} · Cyl ${r.lCyl || '–'} · Axis ${r.lAxis || '–'}${r.lAdd ? ' · Add ' + r.lAdd : ''}
+            ${r.optom ? `<br><span style="color: var(--teal);">${r.optom}</span>` : ''}
+            ${r.notes ? `<br><em style="color: var(--teal-dark);">"${r.notes}"</em>` : ''}
+            ${changeNote}
+          </div>`;
+        }).join('')}
+      </div>
+    ` : `
+      <div class="foundations-card" style="margin-top: 1rem;">
+        <h3>No readings recorded yet</h3>
+        <p>Get your eye test before Day 1 and record it here. Then again after Day 21. The comparison will be your most powerful evidence of change.</p>
+      </div>
+    `}
+  `;
+
+  document.getElementById('cl-save').onclick = () => {
+    const entry = {
+      when: document.getElementById('cl-when').value,
+      rSph: document.getElementById('cl-r-sph').value.trim(),
+      lSph: document.getElementById('cl-l-sph').value.trim(),
+      rCyl: document.getElementById('cl-r-cyl').value.trim(),
+      lCyl: document.getElementById('cl-l-cyl').value.trim(),
+      rAxis: document.getElementById('cl-r-axis').value.trim(),
+      lAxis: document.getElementById('cl-l-axis').value.trim(),
+      rAdd: document.getElementById('cl-r-add').value.trim(),
+      lAdd: document.getElementById('cl-l-add').value.trim(),
+      optom: document.getElementById('cl-optom').value.trim(),
+      notes: document.getElementById('cl-notes').value.trim(),
+      date: Date.now()
+    };
+    const records = load('sc_clinical', []);
+    records.push(entry);
+    save('sc_clinical', records);
+    renderContent();
+  };
+}
+
 
 // ═══════════════════════════════════════════════════════════════════
 // INIT
