@@ -1,5 +1,5 @@
-const CACHE = 'seeing-clearly-v1';
-const ASSETS = ['./vision21-pwa.html', './manifest.json'];
+const CACHE = 'seeing-clearly-v2';
+const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
