@@ -755,6 +755,74 @@
   }
   @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
+
+  /* ── FLOATING TIMER PILL ── */
+  .float-timer {
+    display: none;
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 16px);
+    right: 16px;
+    background: var(--teal-dark);
+    color: white;
+    border-radius: 30px;
+    padding: 8px 14px 8px 12px;
+    z-index: 500;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(8,80,65,0.35);
+    cursor: pointer;
+    user-select: none;
+    animation: floatIn 0.3s ease;
+  }
+  .float-timer.show { display: flex; }
+  .float-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal-mid);
+    flex-shrink: 0;
+  }
+  .float-dot.pulse { animation: dotPulse 1.5s infinite; }
+  .float-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    min-width: 42px;
+  }
+  .float-close {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    line-height: 1;
+  }
+  @keyframes floatIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* IMPROVED ALERT MODAL */
+  .alert-card { animation: alertBounce 0.4s ease; }
+  @keyframes alertBounce { 0% { transform: scale(0.85); opacity: 0; } 70% { transform: scale(1.03); } 100% { transform: scale(1); opacity: 1; } }
+  .alert-progress {
+    width: 100%;
+    height: 4px;
+    background: var(--teal-light);
+    border-radius: 2px;
+    margin: 0.75rem 0;
+    overflow: hidden;
+  }
+  .alert-progress-bar {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+
 </style>
 </head>
 <body>
@@ -786,6 +854,14 @@
     <div class="alert-countdown" id="alert-countdown">20</div>
     <button class="alert-btn" id="alert-dismiss">Dismiss</button>
   </div>
+</div>
+
+
+<!-- Floating Timer Pill -->
+<div class="float-timer" id="float-timer">
+  <div class="float-dot" id="float-dot"></div>
+  <span class="float-time" id="float-time">20:00</span>
+  <button class="float-close" id="float-close" title="Hide">&#x2715;</button>
 </div>
 
 <script>
@@ -1309,50 +1385,172 @@ function renderDayCard(d, done) {
 }
 
 // ─── TIMER ───────────────────────────────────────────────────────
-let timerState = { running: false, secondsLeft: 1200, intervalId: null, mode: 'work' };
+// ── AUDIO ──────────────────────────────────────────────────────
+let audioCtx = null;
+let audioUnlocked = false;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return audioCtx;
+}
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  // Play silent buffer to unlock
+  const buf = ctx.createBuffer(1, 1, 22050);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.connect(ctx.destination);
+  src.start(0);
+  audioUnlocked = true;
+}
+
+function playChime(type) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+
+  const notes = type === 'start'
+    ? [{ f: 528, t: 0, d: 0.5 }]
+    : [{ f: 528, t: 0, d: 0.45 }, { f: 660, t: 0.5, d: 0.45 }, { f: 792, t: 1.0, d: 0.7 }];
+
+  notes.forEach(n => {
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = n.f;
+      const start = ctx.currentTime + n.t;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.18, start + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + n.d);
+      osc.start(start);
+      osc.stop(start + n.d + 0.05);
+    } catch(e) {}
+  });
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────────────────
+let notifPermission = 'default';
+
+async function requestNotifications() {
+  if (!('Notification' in window)) return;
+  try {
+    notifPermission = await Notification.requestPermission();
+  } catch(e) {}
+}
+
+function sendNotification(title, body) {
+  if (notifPermission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body,
+      icon: './icon-192.png',
+      badge: './icon-192.png',
+      vibrate: [300, 150, 300],
+      tag: 'vision-timer',
+      requireInteraction: false,
+    });
+  } catch(e) {}
+}
+
+// ── TIMER STATE ─────────────────────────────────────────────────
+let timerState = { running: false, secondsLeft: 1200, intervalId: null, floatHidden: false };
+
+// ── FLOATING PILL ───────────────────────────────────────────────
+function updateFloatPill() {
+  const pill = document.getElementById('float-timer');
+  const timeEl = document.getElementById('float-time');
+  const dot = document.getElementById('float-dot');
+  if (!pill || !timeEl) return;
+
+  if (timerState.running && !timerState.floatHidden) {
+    pill.classList.add('show');
+    timeEl.textContent = formatTime(timerState.secondsLeft);
+    dot.classList.toggle('pulse', timerState.running);
+  } else if (!timerState.running) {
+    pill.classList.remove('show');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('float-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      timerState.floatHidden = true;
+      document.getElementById('float-timer').classList.remove('show');
+    });
+  }
+  // Tap pill to go to timer tab
+  const pill = document.getElementById('float-timer');
+  if (pill) {
+    pill.addEventListener('click', (e) => {
+      if (e.target.id === 'float-close') return;
+      switchTab('timer');
+    });
+  }
+});
 
 function renderTimer(c) {
+  const notifAvailable = 'Notification' in window;
+  const notifGranted = notifPermission === 'granted';
+
   c.innerHTML = `
     <div class="week-intro">
       <div class="week-label">Screen support</div>
       <h2 class="serif">The 20-20-20 <em>Timer</em></h2>
-      <p>Every 20 minutes of screen work, look 20 feet away for 20 seconds. The single most evidence-supported screen habit for protecting your vision. Use this timer whenever you sit down at a computer.</p>
+      <p>Every 20 minutes of screen work, look 20 feet away for 20 seconds. The most evidence-supported screen habit for protecting your vision.</p>
     </div>
 
     <div class="timer-card">
       <h3 class="serif">Vision Timer</h3>
-      <p class="timer-desc">Keep this app open in the background — it will alert you every 20 minutes</p>
+      <p class="timer-desc">A gentle chime and rest prompt every 20 minutes — then automatic restart</p>
       <div class="timer-display" id="timer-display">${formatTime(timerState.secondsLeft)}</div>
-      <div class="timer-status" id="timer-status">${timerState.running ? (timerState.mode === 'work' ? 'Working' : 'Resting eyes') : 'Ready'}</div>
+      <div class="timer-status" id="timer-status">${timerState.running ? 'Working — eyes on screen' : 'Ready to start'}</div>
       <div class="timer-controls">
         <button class="timer-btn primary" id="timer-toggle">${timerState.running ? 'Pause' : 'Start'}</button>
         <button class="timer-btn" id="timer-reset">Reset</button>
+        ${notifAvailable && !notifGranted ? '<button class="timer-btn" id="notif-btn">Enable alerts</button>' : ''}
+        ${notifGranted ? '<span class="timer-btn" style="opacity:0.6; cursor:default; border-color: var(--teal-mid); color: var(--teal-mid);">Alerts on ✓</span>' : ''}
       </div>
     </div>
 
     <div class="practice-block">
       <div class="practice-block-title">How it works</div>
       <ul>
-        <li>Tap Start when you sit down at a screen</li>
-        <li>20 minutes counts down</li>
-        <li>Gentle alert appears — look away for 20 seconds at something at least 20 feet (6 metres) away</li>
-        <li>Blink softly during the rest</li>
-        <li>Timer automatically restarts the next 20-minute cycle</li>
+        <li>Tap <strong>Start</strong> — audio unlocks and the 20-minute countdown begins</li>
+        <li>A three-note chime plays and a rest prompt appears at 20 minutes</li>
+        <li>A 20-second countdown guides your eye rest — progress bar included</li>
+        <li>Timer restarts automatically for the next cycle</li>
+        <li>A floating badge shows remaining time as you use other tabs in this app</li>
       </ul>
     </div>
 
     <div class="practice-block">
-      <div class="practice-block-title">Bonus practice — every 90 minutes</div>
-      <p>Stand up. Walk for 2 minutes. Look out a window. This breaks the deeper screen-induced postural and accommodative lock that builds up over longer sessions.</p>
+      <div class="practice-block-title">Background alerts</div>
+      <p>Tap <strong>Enable alerts</strong> above to receive a notification on your status bar even when you switch to other apps. Recommended — tap it once and Chrome will ask for permission.</p>
     </div>
 
-    <div class="screen-block">
-      <p><strong>Note on background behaviour:</strong> If you leave this app to use other apps, the timer will pause when the screen locks. Android users: the timer keeps running when you switch apps — Chrome handles this well. iPhone/Safari users: keep this tab active as the timer may pause when switching apps.</p>
+    <div class="practice-block">
+      <div class="practice-block-title">Every 90 minutes</div>
+      <p>Stand up. Walk 2 minutes. Look out a window. This breaks the deeper accommodative lock that builds over longer sessions.</p>
     </div>
   `;
 
-  document.getElementById('timer-toggle').onclick = toggleTimer;
-  document.getElementById('timer-reset').onclick = resetTimer;
+  document.getElementById('timer-toggle').addEventListener('click', () => { unlockAudio(); toggleTimer(); });
+  document.getElementById('timer-reset').addEventListener('click', resetTimer);
+  const nb = document.getElementById('notif-btn');
+  if (nb) nb.addEventListener('click', async () => {
+    await requestNotifications();
+    if (currentTab === 'timer') renderTimer(document.getElementById('container'));
+  });
 }
 
 function formatTime(s) {
@@ -1362,28 +1560,40 @@ function formatTime(s) {
 }
 
 function toggleTimer() {
+  unlockAudio();
   if (timerState.running) {
     clearInterval(timerState.intervalId);
     timerState.running = false;
+    updateFloatPill();
   } else {
+    timerState.floatHidden = false;
     timerState.running = true;
     timerState.intervalId = setInterval(tickTimer, 1000);
+    playChime('start');
+    updateFloatPill();
   }
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
 
 function resetTimer() {
   clearInterval(timerState.intervalId);
-  timerState = { running: false, secondsLeft: 1200, intervalId: null, mode: 'work' };
+  timerState = { running: false, secondsLeft: 1200, intervalId: null, floatHidden: false };
+  updateFloatPill();
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
 
 function tickTimer() {
   timerState.secondsLeft--;
+
+  // Update main display if on timer tab
   if (currentTab === 'timer') {
     const d = document.getElementById('timer-display');
     if (d) d.textContent = formatTime(timerState.secondsLeft);
   }
+
+  // Always update floating pill
+  updateFloatPill();
+
   if (timerState.secondsLeft <= 0) {
     triggerAlert();
   }
@@ -1392,43 +1602,48 @@ function tickTimer() {
 function triggerAlert() {
   clearInterval(timerState.intervalId);
   timerState.running = false;
-  // Audio beep
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 528; // healing frequency
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.6);
-    setTimeout(() => {
-      const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
-      o2.connect(g2); g2.connect(ctx.destination);
-      o2.frequency.value = 528;
-      g2.gain.setValueAtTime(0, ctx.currentTime);
-      g2.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.05);
-      g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-      o2.start(); o2.stop(ctx.currentTime + 0.6);
-    }, 700);
-  } catch(e) {}
+
+  // Three-note chime
+  playChime('alert');
+
   // Vibration
-  if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
-  // Show modal
-  document.getElementById('alert-overlay').classList.add('show');
+  if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]);
+
+  // System notification (if permission granted)
+  sendNotification('Time to look away', 'Look 20 feet away for 20 seconds. Blink softly. Breathe.');
+
+  // Update float pill
+  updateFloatPill();
+
+  // Show modal with progress bar
+  const overlay = document.getElementById('alert-overlay');
+  overlay.classList.add('show');
+
   let count = 20;
   document.getElementById('alert-countdown').textContent = count;
+
+  // Add progress bar if not present
+  const card = overlay.querySelector('.alert-card');
+  let progBar = card.querySelector('.alert-progress');
+  if (!progBar) {
+    progBar = document.createElement('div');
+    progBar.className = 'alert-progress';
+    progBar.innerHTML = '<div class="alert-progress-bar" id="alert-prog-bar" style="width:100%"></div>';
+    card.querySelector('.alert-countdown').after(progBar);
+  }
+  const bar = document.getElementById('alert-prog-bar');
+  if (bar) bar.style.width = '100%';
+
   const cd = setInterval(() => {
     count--;
     document.getElementById('alert-countdown').textContent = count;
+    if (bar) bar.style.width = (count / 20 * 100) + '%';
     if (count <= 0) {
       clearInterval(cd);
       dismissAlert();
     }
   }, 1000);
+
   document.getElementById('alert-dismiss').onclick = () => {
     clearInterval(cd);
     dismissAlert();
@@ -1437,11 +1652,14 @@ function triggerAlert() {
 
 function dismissAlert() {
   document.getElementById('alert-overlay').classList.remove('show');
+  // Play gentle restart chime
+  playChime('start');
   // Restart for next cycle
   timerState.secondsLeft = 1200;
-  timerState.mode = 'work';
+  timerState.floatHidden = false;
   timerState.running = true;
   timerState.intervalId = setInterval(tickTimer, 1000);
+  updateFloatPill();
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
 
