@@ -1,4 +1,4 @@
-const CACHE = 'seeing-clearly-v5';
+const CACHE = 'seeing-clearly-v6';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

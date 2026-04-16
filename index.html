@@ -823,6 +823,126 @@
     transition: width 1s linear;
   }
 
+
+  /* ── VOICE RECORDING ── */
+  .voice-section {
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .voice-section h4 {
+    font-size: 0.78rem;
+    color: var(--teal-mid);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  .voice-section p.voice-desc {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.85rem;
+    line-height: 1.5;
+  }
+  .voice-controls {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
+  }
+  .voice-btn {
+    background: var(--teal-mid);
+    color: var(--teal-dark);
+    border: none;
+    padding: 0.65rem 1.1rem;
+    border-radius: 10px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+  }
+  .voice-btn:hover { background: white; }
+  .voice-btn.recording {
+    background: #E24B4A;
+    color: white;
+    animation: recPulse 1.5s infinite;
+  }
+  .voice-btn.secondary {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .voice-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  @keyframes recPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(226,75,74,0.6); } 50% { box-shadow: 0 0 0 10px rgba(226,75,74,0); } }
+  .voice-record-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: white;
+  }
+  .voice-recordings {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .voice-item {
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .voice-play {
+    background: var(--teal-mid);
+    color: var(--teal-dark);
+    border: none;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .voice-play.playing { background: #E24B4A; color: white; }
+  .voice-info { flex: 1; min-width: 0; }
+  .voice-name {
+    font-size: 0.85rem;
+    color: white;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .voice-meta {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.5);
+  }
+  .voice-delete {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    padding: 6px;
+    font-size: 0.9rem;
+  }
+  .voice-delete:hover { color: #E24B4A; }
+  .voice-status {
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.8rem;
+    color: var(--teal-mid);
+    margin-bottom: 0.75rem;
+    font-family: monospace;
+  }
+  .voice-status.recording { color: #FF9999; }
+
 </style>
 </head>
 <body>
@@ -1287,6 +1407,27 @@ function renderIntention(c) {
       ` : ''}
     </div>
 
+    <div class="intention-card" style="margin-top: 1.25rem;">
+      <h3 class="serif">Record your voice</h3>
+      <p>Your own voice carries a frequency and emotional quality that no external recording can replicate. Record your intention, affirmation, or a personal blessing — then play it back during palming, on walks, or any quiet moment. You will be feeding your own nervous system its own signal.</p>
+
+      <div class="voice-section">
+        <h4>New recording</h4>
+        <p class="voice-desc">Speak slowly, with genuine feeling. A few phrases is enough. Close your eyes if it helps.</p>
+        <div class="voice-status" id="voice-status">Ready to record</div>
+        <div class="voice-controls">
+          <button class="voice-btn" id="voice-record-btn"><span class="voice-record-dot"></span> Record</button>
+          <button class="voice-btn secondary" id="voice-stop-btn" disabled>Stop</button>
+          <input type="text" id="voice-name" placeholder="Name (e.g. Morning intention)" style="flex:1; min-width: 140px; padding: 0.65rem 0.85rem; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 8px; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;">
+        </div>
+      </div>
+
+      <div class="voice-section" id="voice-library-section" style="display: none;">
+        <h4>Your recordings</h4>
+        <div class="voice-recordings" id="voice-recordings"></div>
+      </div>
+    </div>
+
     <div class="practice-block">
       <div class="practice-block-title">Daily opening micro-ritual</div>
       <p>Each morning before your practice, return briefly to your intention. Read it. Feel it. Breathe with it. Let it set the tone of your day. This is how vision changes — not through force, but through consistent, conscious dedication.</p>
@@ -1297,6 +1438,190 @@ function renderIntention(c) {
     if (!text) return;
     save(STORAGE.intention, { text, date: Date.now() });
     renderContent();
+  };
+
+  setupVoiceRecording();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// VOICE RECORDING
+// ═══════════════════════════════════════════════════════════════════
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordStartTime = 0;
+let recordTimerId = null;
+let currentAudio = null;
+let currentPlayingId = null;
+
+async function setupVoiceRecording() {
+  const recBtn = document.getElementById('voice-record-btn');
+  const stopBtn = document.getElementById('voice-stop-btn');
+  const status = document.getElementById('voice-status');
+  if (!recBtn) return;
+
+  renderVoiceLibrary();
+
+  recBtn.onclick = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordedChunks = [];
+
+      // Try different mime types for broad compatibility
+      let mime = 'audio/webm';
+      if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/mp4';
+      if (!MediaRecorder.isTypeSupported(mime)) mime = '';
+
+      mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+        const duration = Math.round((Date.now() - recordStartTime) / 1000);
+        await saveRecording(blob, duration);
+        clearInterval(recordTimerId);
+        recBtn.classList.remove('recording');
+        recBtn.disabled = false;
+        stopBtn.disabled = true;
+        status.classList.remove('recording');
+        status.textContent = 'Recording saved';
+        setTimeout(() => { if (status.textContent === 'Recording saved') status.textContent = 'Ready to record'; }, 2000);
+      };
+
+      recordStartTime = Date.now();
+      mediaRecorder.start();
+      recBtn.classList.add('recording');
+      recBtn.disabled = true;
+      stopBtn.disabled = false;
+      status.classList.add('recording');
+
+      const updateRec = () => {
+        const secs = Math.floor((Date.now() - recordStartTime) / 1000);
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        status.textContent = '● Recording — ' + m + ':' + String(s).padStart(2, '0');
+      };
+      updateRec();
+      recordTimerId = setInterval(updateRec, 500);
+
+    } catch(e) {
+      status.textContent = 'Microphone access denied. Please allow microphone in browser settings.';
+      console.error('Mic error:', e);
+    }
+  };
+
+  stopBtn.onclick = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+  };
+}
+
+async function saveRecording(blob, duration) {
+  const nameInput = document.getElementById('voice-name');
+  const name = (nameInput ? nameInput.value.trim() : '') || ('Recording ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    const recs = load('sc_voice_recordings', []);
+    recs.push({
+      id: 'rec_' + Date.now(),
+      name,
+      data: dataUrl,
+      duration,
+      date: Date.now()
+    });
+    save('sc_voice_recordings', recs);
+    if (nameInput) nameInput.value = '';
+    renderVoiceLibrary();
+  };
+  reader.readAsDataURL(blob);
+}
+
+function renderVoiceLibrary() {
+  const section = document.getElementById('voice-library-section');
+  const list = document.getElementById('voice-recordings');
+  if (!list || !section) return;
+
+  const recs = load('sc_voice_recordings', []);
+  if (recs.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  list.innerHTML = recs.slice().reverse().map(r => {
+    const m = Math.floor(r.duration / 60);
+    const s = r.duration % 60;
+    const dur = m + ':' + String(s).padStart(2, '0');
+    const d = new Date(r.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return '<div class="voice-item">' +
+      '<button class="voice-play" data-id="' + r.id + '" aria-label="Play">▶</button>' +
+      '<div class="voice-info">' +
+        '<div class="voice-name">' + r.name + '</div>' +
+        '<div class="voice-meta">' + dur + ' · ' + d + '</div>' +
+      '</div>' +
+      '<button class="voice-delete" data-id="' + r.id + '" aria-label="Delete">✕</button>' +
+    '</div>';
+  }).join('');
+
+  list.querySelectorAll('.voice-play').forEach(btn => {
+    btn.onclick = () => togglePlay(btn.dataset.id, btn);
+  });
+  list.querySelectorAll('.voice-delete').forEach(btn => {
+    btn.onclick = () => {
+      if (confirm('Delete this recording?')) {
+        const recs = load('sc_voice_recordings', []).filter(r => r.id !== btn.dataset.id);
+        save('sc_voice_recordings', recs);
+        if (currentPlayingId === btn.dataset.id && currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+          currentPlayingId = null;
+        }
+        renderVoiceLibrary();
+      }
+    };
+  });
+}
+
+function togglePlay(id, btn) {
+  const recs = load('sc_voice_recordings', []);
+  const rec = recs.find(r => r.id === id);
+  if (!rec) return;
+
+  // Stop any currently playing
+  if (currentAudio) {
+    currentAudio.pause();
+    const prevBtn = document.querySelector('.voice-play[data-id="' + currentPlayingId + '"]');
+    if (prevBtn) { prevBtn.classList.remove('playing'); prevBtn.innerHTML = '▶'; }
+    if (currentPlayingId === id) {
+      currentAudio = null;
+      currentPlayingId = null;
+      return;
+    }
+  }
+
+  currentAudio = new Audio(rec.data);
+  currentPlayingId = id;
+  btn.classList.add('playing');
+  btn.innerHTML = '■';
+
+  currentAudio.play().catch(e => {
+    console.error('Playback error:', e);
+    btn.classList.remove('playing');
+    btn.innerHTML = '▶';
+    currentAudio = null;
+    currentPlayingId = null;
+  });
+
+  currentAudio.onended = () => {
+    btn.classList.remove('playing');
+    btn.innerHTML = '▶';
+    currentAudio = null;
+    currentPlayingId = null;
   };
 }
 
@@ -1462,8 +1787,46 @@ function sendNotification(title, body) {
   } catch(e) {}
 }
 
-// ── TIMER STATE ─────────────────────────────────────────────────
-let timerState = { running: false, secondsLeft: 1200, intervalId: null, floatHidden: false };
+// ── TIMER STATE (timestamp-based — survives backgrounding & screen lock) ──
+// State is persisted to localStorage so it survives even a full app close
+let timerState = {
+  running: false,
+  phase: 'work', // 'work' or 'rest'
+  endTime: 0,    // absolute ms timestamp when current phase ends
+  floatHidden: false,
+  intervalId: null,
+  pausedAt: 0,  // ms remaining when paused
+};
+
+const WORK_DURATION = 20 * 60 * 1000; // 20 minutes
+const REST_DURATION = 20 * 1000;       // 20 seconds
+
+// Load persisted timer state
+function loadTimerState() {
+  const saved = load('sc_timer_state', null);
+  if (saved && saved.running && saved.endTime > Date.now()) {
+    timerState.running = saved.running;
+    timerState.phase = saved.phase;
+    timerState.endTime = saved.endTime;
+    timerState.floatHidden = saved.floatHidden || false;
+    // Resume ticking
+    if (timerState.intervalId) clearInterval(timerState.intervalId);
+    timerState.intervalId = setInterval(tickTimer, 500);
+  } else if (saved && saved.running && saved.endTime <= Date.now()) {
+    // Timer finished while we were away — fire alert catchup
+    timerState.running = false;
+    save('sc_timer_state', null);
+  }
+}
+
+function persistTimerState() {
+  save('sc_timer_state', {
+    running: timerState.running,
+    phase: timerState.phase,
+    endTime: timerState.endTime,
+    floatHidden: timerState.floatHidden,
+  });
+}
 
 // ── FLOATING PILL ───────────────────────────────────────────────
 function updateFloatPill() {
@@ -1474,7 +1837,7 @@ function updateFloatPill() {
 
   if (timerState.running && !timerState.floatHidden) {
     pill.classList.add('show');
-    timeEl.textContent = formatTime(timerState.secondsLeft);
+    timeEl.textContent = formatTime(getSecondsLeft());
     dot.classList.add('pulse');
   } else if (timerState.running && timerState.floatHidden) {
     // Still running but user hid it — keep hidden
@@ -1519,7 +1882,7 @@ function renderTimer(c) {
     <div class="timer-card">
       <h3 class="serif">Vision Timer</h3>
       <p class="timer-desc">A gentle chime and rest prompt every 20 minutes — then automatic restart</p>
-      <div class="timer-display" id="timer-display">${formatTime(timerState.secondsLeft)}</div>
+      <div class="timer-display" id="timer-display">${formatTime(getSecondsLeft())}</div>
       <div class="timer-status" id="timer-status">${timerState.running ? 'Working — eyes on screen' : 'Ready to start'}</div>
       <div class="timer-controls">
         <button class="timer-btn primary" id="timer-toggle">${timerState.running ? 'Pause' : 'Start'}</button>
@@ -1569,67 +1932,95 @@ function formatTime(s) {
 function toggleTimer() {
   unlockAudio();
   if (timerState.running) {
-    clearInterval(timerState.intervalId);
+    // Pause
+    const msLeft = timerState.endTime - Date.now();
+    timerState.pausedAt = Math.max(0, msLeft);
     timerState.running = false;
+    if (timerState.intervalId) clearInterval(timerState.intervalId);
+    timerState.intervalId = null;
+    persistTimerState();
+    save('sc_timer_state', null);
     updateFloatPill();
   } else {
+    // Start or resume
     timerState.floatHidden = false;
+    const duration = timerState.pausedAt > 0 ? timerState.pausedAt : (timerState.phase === 'work' ? WORK_DURATION : REST_DURATION);
+    timerState.endTime = Date.now() + duration;
+    timerState.pausedAt = 0;
     timerState.running = true;
-    timerState.intervalId = setInterval(tickTimer, 1000);
+    if (timerState.intervalId) clearInterval(timerState.intervalId);
+    timerState.intervalId = setInterval(tickTimer, 500);
     playChime('start');
+    // Schedule system notification via service worker (survives backgrounding)
+    scheduleBackgroundAlert(duration);
+    persistTimerState();
     updateFloatPill();
   }
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
 
 function resetTimer() {
-  clearInterval(timerState.intervalId);
-  timerState = { running: false, secondsLeft: 1200, intervalId: null, floatHidden: false };
+  if (timerState.intervalId) clearInterval(timerState.intervalId);
+  timerState = { running: false, phase: 'work', endTime: 0, floatHidden: false, intervalId: null, pausedAt: 0 };
+  save('sc_timer_state', null);
+  cancelBackgroundAlert();
   updateFloatPill();
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
 
+function getSecondsLeft() {
+  if (!timerState.running) return Math.floor((timerState.pausedAt || WORK_DURATION) / 1000);
+  const msLeft = Math.max(0, timerState.endTime - Date.now());
+  return Math.ceil(msLeft / 1000);
+}
+
 function tickTimer() {
-  timerState.secondsLeft--;
+  const msLeft = timerState.endTime - Date.now();
 
   // Update main display if on timer tab
   if (currentTab === 'timer') {
     const d = document.getElementById('timer-display');
-    if (d) d.textContent = formatTime(timerState.secondsLeft);
+    if (d) d.textContent = formatTime(Math.max(0, Math.ceil(msLeft / 1000)));
   }
 
-  // Always update floating pill (resilient — element persists outside container)
+  // Always update floating pill
   updateFloatPill();
 
-  if (timerState.secondsLeft <= 0) {
-    triggerAlert();
+  // Phase transition
+  if (msLeft <= 0) {
+    clearInterval(timerState.intervalId);
+    timerState.intervalId = null;
+    if (timerState.phase === 'work') {
+      triggerAlert();
+    } else {
+      // Rest finished — restart work
+      timerState.phase = 'work';
+      timerState.endTime = Date.now() + WORK_DURATION;
+      playChime('start');
+      timerState.intervalId = setInterval(tickTimer, 500);
+      persistTimerState();
+    }
   }
 }
 
 function triggerAlert() {
-  clearInterval(timerState.intervalId);
-  timerState.running = false;
+  if (timerState.intervalId) clearInterval(timerState.intervalId);
+  timerState.intervalId = null;
+
+  // Enter rest phase (timestamp-based)
+  timerState.phase = 'rest';
+  timerState.endTime = Date.now() + REST_DURATION;
+  persistTimerState();
 
   // Three-note chime
   playChime('alert');
-
-  // Vibration
   if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]);
-
-  // System notification (if permission granted)
   sendNotification('Time to look away', 'Look 20 feet away for 20 seconds. Blink softly. Breathe.');
-
-  // Update float pill
   updateFloatPill();
 
-  // Show modal with progress bar
   const overlay = document.getElementById('alert-overlay');
   overlay.classList.add('show');
 
-  let count = 20;
-  document.getElementById('alert-countdown').textContent = count;
-
-  // Add progress bar if not present
   const card = overlay.querySelector('.alert-card');
   let progBar = card.querySelector('.alert-progress');
   if (!progBar) {
@@ -1641,31 +2032,36 @@ function triggerAlert() {
   const bar = document.getElementById('alert-prog-bar');
   if (bar) bar.style.width = '100%';
 
-  const cd = setInterval(() => {
-    count--;
-    document.getElementById('alert-countdown').textContent = count;
+  const restInterval = setInterval(() => {
+    const msLeft = timerState.endTime - Date.now();
+    const count = Math.max(0, Math.ceil(msLeft / 1000));
+    const countEl = document.getElementById('alert-countdown');
+    if (countEl) countEl.textContent = count;
     if (bar) bar.style.width = (count / 20 * 100) + '%';
-    if (count <= 0) {
-      clearInterval(cd);
+    if (msLeft <= 0) {
+      clearInterval(restInterval);
       dismissAlert();
     }
-  }, 1000);
+  }, 250);
 
   document.getElementById('alert-dismiss').onclick = () => {
-    clearInterval(cd);
+    clearInterval(restInterval);
     dismissAlert();
   };
 }
 
 function dismissAlert() {
   document.getElementById('alert-overlay').classList.remove('show');
-  // Play gentle restart chime
   playChime('start');
-  // Restart for next cycle
-  timerState.secondsLeft = 1200;
+  // Start next work cycle
+  timerState.phase = 'work';
+  timerState.endTime = Date.now() + WORK_DURATION;
   timerState.floatHidden = false;
   timerState.running = true;
-  timerState.intervalId = setInterval(tickTimer, 1000);
+  if (timerState.intervalId) clearInterval(timerState.intervalId);
+  timerState.intervalId = setInterval(tickTimer, 500);
+  persistTimerState();
+  scheduleBackgroundAlert(WORK_DURATION);
   updateFloatPill();
   if (currentTab === 'timer') renderTimer(document.getElementById('container'));
 }
@@ -2034,6 +2430,68 @@ function renderClinical(c) {
   };
 }
 
+
+
+
+// ═══════════════════════════════════════════════════════════════════
+// BACKGROUND ALERT (Service Worker + Page Visibility)
+// ═══════════════════════════════════════════════════════════════════
+let bgAlertTimeoutId = null;
+
+function scheduleBackgroundAlert(durationMs) {
+  cancelBackgroundAlert();
+  // This fires even if user has tab in background (browser throttles but still runs)
+  bgAlertTimeoutId = setTimeout(() => {
+    // If page is hidden, send notification directly
+    if (document.hidden) {
+      sendNotification('Time to look away', 'Look 20 feet away for 20 seconds. Tap to return.');
+      if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]);
+    }
+    // tickTimer will also catch the elapsed time when page becomes visible
+  }, durationMs);
+}
+
+function cancelBackgroundAlert() {
+  if (bgAlertTimeoutId) {
+    clearTimeout(bgAlertTimeoutId);
+    bgAlertTimeoutId = null;
+  }
+}
+
+// Page visibility — when user returns to the tab/app, catch up immediately
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && timerState.running) {
+    // Page became visible — check if timer has already elapsed
+    const msLeft = timerState.endTime - Date.now();
+    if (msLeft <= 0) {
+      // Timer completed while hidden — trigger the appropriate action
+      if (timerState.intervalId) clearInterval(timerState.intervalId);
+      timerState.intervalId = null;
+      if (timerState.phase === 'work') {
+        triggerAlert();
+      } else {
+        // Rest already ended — restart work phase
+        timerState.phase = 'work';
+        timerState.endTime = Date.now() + WORK_DURATION;
+        playChime('start');
+        timerState.intervalId = setInterval(tickTimer, 500);
+        persistTimerState();
+      }
+    } else {
+      // Still running — ensure tick is active
+      if (!timerState.intervalId) {
+        timerState.intervalId = setInterval(tickTimer, 500);
+      }
+      updateFloatPill();
+      if (currentTab === 'timer') renderTimer(document.getElementById('container'));
+    }
+  }
+});
+
+// Restore timer on page load
+window.addEventListener('load', () => {
+  setTimeout(loadTimerState, 100);
+});
 
 // ═══════════════════════════════════════════════════════════════════
 // INIT
