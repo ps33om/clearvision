@@ -943,6 +943,121 @@
   }
   .voice-status.recording { color: #FF9999; }
 
+
+  /* ── WELCOME MEDIA BLOCK ── */
+  .welcome-card {
+    background: linear-gradient(135deg, var(--teal-dark), #0a6b56);
+    border-radius: 18px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-card::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(93,202,165,0.1);
+  }
+  .welcome-card-inner { position: relative; z-index: 1; }
+  .welcome-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--teal-mid);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .welcome-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: white;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .welcome-title em { font-style: italic; color: var(--teal-mid); }
+  .welcome-sub {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 1.1rem;
+    line-height: 1.55;
+  }
+  .media-frame {
+    background: rgba(0,0,0,0.25);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
+  }
+  .media-frame audio, .media-frame video {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+  .media-placeholder {
+    background: rgba(255,255,255,0.05);
+    border: 1.5px dashed rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+  .media-placeholder-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 0.75rem;
+    background: rgba(93,202,165,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .media-placeholder p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.55;
+    margin-bottom: 0.4rem;
+  }
+  .media-placeholder p.hint {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    font-style: italic;
+  }
+  .welcome-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.85rem;
+  }
+  .welcome-btn {
+    background: var(--teal-mid);
+    color: var(--teal-dark);
+    border: none;
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .welcome-btn.secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .welcome-quote {
+    background: rgba(93,202,165,0.12);
+    border-left: 3px solid var(--teal-mid);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-top: 0.85rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: white;
+    line-height: 1.5;
+  }
+
 </style>
 </head>
 <body>
@@ -1008,7 +1123,27 @@ const FOUNDATIONS_HTML = `
   <div class="week-intro">
     <div class="week-label">Before you begin</div>
     <h2 class="serif">The <em>Foundations</em></h2>
-    <p>Read this once before Day 1. These are the principles and daily non-negotiables that run through all 21 days.</p>
+    <p>Start here. Watch or listen to the welcome below, then read the principles and daily non-negotiables that run through all 21 days.</p>
+  </div>
+
+  <div class="welcome-card">
+    <div class="welcome-card-inner">
+      <div class="welcome-label">Start here · 3½ minutes</div>
+      <div class="welcome-title">A <em>Welcome</em> from Paul</div>
+      <div class="welcome-sub">An overview of what this programme is, how it works, and how to get the most from these 21 days. Please give this your full attention before Day 1.</div>
+
+      <div class="media-frame" id="welcome-media-frame">
+        <div class="media-placeholder">
+          <div class="media-placeholder-icon">▶</div>
+          <p><strong style="color: var(--teal-mid);">Welcome recording coming soon</strong></p>
+          <p class="hint">Paul is preparing the audio/video welcome. When ready, it will play here.</p>
+        </div>
+      </div>
+
+      <div class="welcome-quote">
+        "You are a consciousness, projecting yourself into this remarkable body. The universe is set up for your expansion. Your eyes know how to see."
+      </div>
+    </div>
   </div>
 
   <div class="quote-block">
