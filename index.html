@@ -1133,11 +1133,11 @@ const FOUNDATIONS_HTML = `
       <div class="welcome-sub">An overview of what this programme is, how it works, and how to get the most from these 21 days. Please give this your full attention before Day 1.</div>
 
       <div class="media-frame" id="welcome-media-frame">
-        <div class="media-placeholder">
-          <div class="media-placeholder-icon">▶</div>
-          <p><strong style="color: var(--teal-mid);">Welcome recording coming soon</strong></p>
-          <p class="hint">Paul is preparing the audio/video welcome. When ready, it will play here.</p>
-        </div>
+        <audio controls preload="metadata" style="width: 100%; display: block;">
+          <source src="welcome.mp3" type="audio/mpeg">
+          Your browser does not support audio playback.
+        </audio>
+        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.6rem; text-align: center; font-style: italic;">Find a quiet moment. Close your eyes if you wish. Receive this.</p>
       </div>
 
       <div class="welcome-quote">
